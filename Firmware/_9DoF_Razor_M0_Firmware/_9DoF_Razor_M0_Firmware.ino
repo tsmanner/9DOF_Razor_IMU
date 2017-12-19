@@ -122,6 +122,7 @@ void setup()
   if ( initSD() )
   {
     sdCardPresent = true;
+    blinkLED();
     // Get the next, available log file name
     logFileName = nextLogFile(); 
   }
@@ -260,9 +261,9 @@ void logIMUData(void)
     if (imuLog.length() + logFileBuffer.length() >=
         SD_LOG_WRITE_BUFFER_SIZE)
     {
-      sdLogString(logFileBuffer); // Log SD buffer
+      bool logged = sdLogString(logFileBuffer); // Log SD buffer
       logFileBuffer = ""; // Clear SD log buffer 
-      blinkLED(); // Blink LED every time a new buffer is logged to SD
+      if (logged) blinkLED(); // Blink LED every time a new buffer is logged to SD
     }
     // Add new line to SD log buffer
     logFileBuffer += imuLog;
@@ -272,7 +273,7 @@ void logIMUData(void)
     // Blink LED once every second (if only logging to serial port)
     if ( millis() > lastBlink + UART_BLINK_RATE )
     {
-      blinkLED(); 
+      //blinkLED(); 
       lastBlink = millis();
     }
   }
